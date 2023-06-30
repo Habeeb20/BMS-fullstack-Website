@@ -4,12 +4,28 @@
 
 <%
 if(posts.length > 0){
-    for(let i = 0; i < posts.length; i++){
+    <!-- for(let i = 0; i < posts.length; i++){ -->
+
+         for(let i = (posts.length-1); i>=0; i--){
 
         %>
     
         <div class="row gx-4 gx-5 align-items-center my-5">
-            <div class="col-lg-7"><img src="" alt="" class="img-fluid rounded mb-4 mb-lg-0"></div>
+            <div class="col-lg-7">
+                <%
+                    if(posts[i].image !== undefined && posts[i].image !== ''){
+                        %>
+                        <img src="<%= posts[i].image %>" class="img-fluid rounded mb-4 mb-lg-0" alt="">
+
+                        <%
+                    } else {
+                        %>
+                            <img src="" class="img-fluid rounded mb-4 mb-lg-0" alt="">
+                        <%
+                    }
+                %>
+                <img src="" alt="" class="img-fluid rounded mb-4 mb-lg-0">
+            </div>
             <div class="col-lg-5">
                 <h1 class="font-weight-light"><%= posts{i}.title %></h1>
                 <p><%= posts{i}.content %></p>
@@ -31,6 +47,16 @@ if(posts.length > 0){
     <%
  } 
  %>
+
+ <script>
+    var socket = io();
+    socket.on("new_post", function(formData){
+        console.log(formData)
+
+        
+     
+    })
+ </script>
 
 
 

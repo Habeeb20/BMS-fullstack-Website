@@ -1,6 +1,6 @@
 const express = require ('express');
 const user_route = express();
-const adminController = require('../controller/adminControlleer')
+const adminController = require('../controller/adminController')
 const bodyParser= require("body-parser");
 user_route.use(bodyParser.json());
 const userController = require('../controller/userController')
@@ -33,6 +33,9 @@ user_route.get('/profile', userController.profile);
 user_route.get('/logout', adminLoginAuth.isLogin, userController.logout);
 user_route.get('/forget-pasword', adminLoginAuth.isLogout, userController.forgetLoad)
 user_route.post('/forget-password', userController.forgetPasswordVerify);
+user_route.get('/reset-password', adminLoginAuth.isLogout, userController.resetPasswordLoad);
+
+user_route.post('/reset-password',userController.resetPassword);
 
 
 

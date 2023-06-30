@@ -3,6 +3,9 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer')
 const randomstring = require('randomstring');
 const config = require('../config/config');
+const adminController = require('./adminController');
+
+
 const sendResetPasswordMail = async(name, email, token) => {
 
 
@@ -146,7 +149,45 @@ const forgetPasswordVerify = (async(req, res) => {
     } catch (error) {
         console.log(error)
     }
-})
+});
+
+
+const resetPasswordLoad = (async(req, res) => {
+    try {
+        const token = req.query.token;
+        const tokenData = await User.findOne ({token: token })
+
+        if (tokenData) {
+            res.render('reset-password', {user_id:tokenData._id })
+            
+        } else {
+            res.render('404')
+        }
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+});
+
+
+const resetPassword = (async(req, res) => {
+    try {
+        const password = req.body.password;
+        const user_id = req.body.user_id;
+
+
+        const securePassword = await adminController.securePassword(password);
+        User.findByIdAndUpdate ({_id:user_id},  {$set: {password:securePassword, token: ""}})
+
+        res.redirect('/login');
+     
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+});
 
 module.exports= {
     loadLogin,
@@ -154,5 +195,7 @@ module.exports= {
     profile,
     logout,
     forgetLoad,
-    forgetPasswordVerify
+    forgetPasswordVerify,
+    resetPasswordLoad,
+    resetPassword
 }

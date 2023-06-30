@@ -1,6 +1,6 @@
 const express = require ('express');
 const admin_route = express();
-const adminController = require('../controller/adminControlleer')
+const adminController = require('../controller/adminController')
 const bodyParser= require("body-parser");
 admin_route.use(bodyParser.json());
 admin_route.use(bodyParser.urlencoded({extended:true}));
@@ -50,7 +50,11 @@ admin_route.get('/dashboard', adminLoginAuth.isLogin, adminController.dashboard)
 admin_route.get('/create-post', adminLoginAuth.isLogin, adminController.loadPostDashboard);
 admin_route.post('/create-post', adminLoginAuth.isLogin, adminController.AddPost);
 
- 
+admin_route.post('/upload-post-image',upload.single('image'), adminLoginAuth.isLogin, adminController.uploadPostImage);
+admin_route.post('/delete-post', adminLoginAuth.isLogin, adminController.deletePost);
+admin_route.get('/edit-post/:id', adminLoginAuth.isLogin, adminController.loadeditPost);
+admin_route.post('/update-post/:id', adminLoginAuth.isLogin, adminController.updatePost);
+
 
 
 module.exports = admin_route

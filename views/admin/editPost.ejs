@@ -1,10 +1,10 @@
 <%- include('../layouts/admin-header.ejs') %>
 
   <div id="content" class="p-4 p-md-5 pt-5">
-    <h2 class="mb-4">Add post</h2>
+    <h2 class="mb-4">Edit post</h2>
 
     <div class="container">
-      <form action="" method="POST" id="addPost">
+      <form action="" method="POST" id="editPost">
         <div class="row">
           <div class="col-sm-12">
             <h5>Title</h5>
@@ -12,7 +12,8 @@
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <input type="text" name="title" required placeholder="enter post Title" class="w-50">
+            <input type="hidden" name="id" value="<%=post._id %>">
+            <input type="text" name="title" value="<%=post.title %>" required placeholder="enter post Title" class="w-50">
           </div>
         </div>
 
@@ -47,68 +48,29 @@
   </div>
 
 
-
-  <% if(typeof message !=='undefined' ){ %>
-    <p style="color: green;">
-      <%= message %>
-    </p>
-    <% } %>
-
-
-      <div class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Upload</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-
-            <form action="" id="uploadForm" enctype="multipart/form-data">
-              <div class="modal-body">
-                <input type="file" name="image" required>
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">upload</button>
-            
-              </div>
-
-            </form>
-
-          </div>
-        </div>
       </div>
+
+      <p style="color:green," class="status"></p>
 
       <script>
         $(document).ready(function(){
-          $("#addPost").submit(function(event){
+          $("#editPost").submit(function(event){
             event.preventDefault();
             $.each($(this).serializeArray(), function(i, field){
               FormData[field.name] =  field.value;
             });
 
             $.ajax({
-              url:"/create-post",
+              url:"/update-post",
               type:"POST",
               data:new FormData(this),
-              <!-- contentType:false,
-              cache:false,
-              processData:false, -->
+              //contentType:false,
+              //cache:false,
+             // processData:false, -->
               success:function(data){
                 if(data.success == true) {
-                  
+                    $('.status').text(data.msg);
                 
-
-                  alert(data.msg);
-                  $(obj)[0].reset();
-                  $('#image').val('');
-                  formData._id = data._id;
-
-                  var socket = io();
-                  socket.emit("new_post", formData)
                 
 
                 } else{

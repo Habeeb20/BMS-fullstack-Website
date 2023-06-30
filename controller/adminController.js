@@ -83,7 +83,8 @@ const blogSetupSave = async(req, res)=>{
 
 const dashboard = (async( req, res) => {
     try {
-        req.render('admin/dashboard')
+        const allposts=await Post.find({})
+        req.render('admin/dashboard', {posts:allposts})
         
     } catch (error) {
         console.log(error.message)
@@ -101,14 +102,75 @@ const loadPostDashboard = (async(req, res) => {
 
 const AddPost = (async(req, res) => {
     try {
+
+
+        var image = '';
+        if(req.body.image !== undefined){
+            image = req.body.image;
+        }
         const post = new Post ({
             title: req.body.title,
-            content: req.body.content
+            content: req.body.content,
+            image : image
         });
 
         const postData = await post.save();
 
-        res.render('admin/postDashBoard', {message:'post data successfully'})
+        res.send({ success: true, msg:"post added successfully",_id:postData._id})
+
+        // res.render('admin/postDashBoard', {message:'post data successfully'})
+        
+    } catch (error) {
+        res.send({success:false, message: error})
+        
+    }
+});
+
+const uploadPostImage = (async(req, res) => {
+    try {
+        var imagePath ='/images';
+        imagePath = imagePath+ '/' + req.file.filename;
+
+        res.send({success:true, msg:"Post Image upload successfully", path:imagePath})
+    } catch (error) {
+        console.log(error)
+        
+    }
+});
+
+const deletePost = (async(req, res) => {
+    try {
+        await Post.deleteOne({_id:req.params.id})
+        res.status(200).json({success:true, msg:"successfully deleted"})
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+});
+
+const loadeditPost = (async(req, res) => {
+    try {
+         var postData = await Post.findOne({_id: req.params.id});
+
+         res.render('admin/editPost', {post:postData })
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+});
+
+const updatePost = (async(req, res) => {
+    try {
+        var editData = await Post.findByIdAndUpdate({_id: req.params.id}, {
+            $set:{
+                title:req.body.title,
+                content:req.body.content
+            }
+        });
+
+        
         
     } catch (error) {
         console.log(error)
@@ -123,5 +185,10 @@ module.exports = {
     blogSetupSave,
     dashboard,
     loadPostDashboard,
-    AddPost
+    AddPost,
+    securePassword,
+    uploadPostImage,
+    deletePost,
+    loadeditPost,
+    updatePost
 }
